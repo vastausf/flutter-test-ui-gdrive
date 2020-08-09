@@ -1,0 +1,45 @@
+name: gdrive
+description: GDrive
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/add.png
+    - assets/images/app_logo.png
+    - assets/images/arrow_right.png
+    - assets/images/avatar.png
+    - assets/images/burger.png
+    - assets/images/folder_back.png
+    - assets/images/folder_front.png
+    - assets/images/menu.png
+    - assets/images/options.png
+    - assets/images/search.png
+
+  fonts:
+    - family: Poppins-Regular
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+    - family: Poppins-Semibold
+      fonts:
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+    - family: Poppins-Medium
+      fonts:
+        - asset: assets/fonts/Poppins-Medium.ttf
