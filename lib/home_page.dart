@@ -9,7 +9,7 @@ import 'package:gdrive/sizes.dart';
 import 'package:gdrive/strings.dart';
 
 class HomePage extends StatelessWidget {
-  List<FolderData> folders = <FolderData>[
+  List<FolderData> folders = [
     FolderData(
         title: "Web Design",
         date: "20 Dec 2020",
@@ -89,14 +89,14 @@ class HomePage extends StatelessWidget {
                     RichText(
                       text: TextSpan(children: [
                         TextSpan(
-                            //TODO: Change on device free space
+                          //TODO: Change on device free space
                             text: "7,5 Gb ",
                             style: ProjectFonts.normalMedium(color: ProjectColors.white)),
                         TextSpan(
-                            //TODO: Change on GDrive max space
+                          //TODO: Change on GDrive max space
                             text: "/ 15 Gb ",
                             style:
-                                ProjectFonts.normalRegular(color: ProjectColors.white60))
+                            ProjectFonts.normalRegular(color: ProjectColors.white60))
                       ]),
                     ),
                   ],
@@ -113,7 +113,7 @@ class HomePage extends StatelessWidget {
                               strokeWidth: 3,
                               backgroundColor: ProjectColors.brandPrimary2,
                               valueColor:
-                                  AlwaysStoppedAnimation<Color>(ProjectColors.white),
+                              AlwaysStoppedAnimation<Color>(ProjectColors.white),
                             ),
                             height: ProjectSizes.xxxBigSize,
                             width: ProjectSizes.xxxBigSize,
@@ -259,7 +259,7 @@ class HomePage extends StatelessWidget {
       decoration: BoxDecoration(
           color: ProjectColors.white,
           borderRadius:
-              BorderRadius.vertical(top: Radius.circular(ProjectSizes.xSmallRadius))),
+          BorderRadius.vertical(top: Radius.circular(ProjectSizes.xSmallRadius))),
       child: Column(
         children: [
           Row(
@@ -277,17 +277,38 @@ class HomePage extends StatelessWidget {
             ],
           ),
           SizedBox(height: 24),
-          GridView.count(
-              controller: ScrollController(keepScrollOffset: false),
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              mainAxisSpacing: ProjectSizes.xSmallSpacing,
-              crossAxisSpacing: ProjectSizes.xSmallSpacing,
-              children: folders
-                  .map((FolderData folderData) => buildFolderBlock(folderData))
-                  .toList())
+          buildFoldersList()
         ],
       ),
+    );
+  }
+
+  Widget buildFoldersList() {
+    List<Row> foldersPairs = [];
+
+    for (int i = 0; i < folders.length; i += 2) {
+      foldersPairs.add(Row(
+        children: [
+          Flexible(
+            child: buildFolderBlock(folders[i]),
+          ),
+          SizedBox(width: ProjectSizes.xSmallSpacing),
+          if (folders.length > i + 1)
+            Flexible(
+              child: buildFolderBlock(folders[i + 1]),
+            )
+          else
+            Flexible(child: Container()),
+        ],
+      ));
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: foldersPairs.length,
+      itemBuilder: (context, index) => foldersPairs[index],
+      separatorBuilder: (context, index) => Container(height: ProjectSizes.xSmallSpacing),
     );
   }
 
