@@ -8,7 +8,12 @@ import 'package:gdrive/project_colors.dart';
 import 'package:gdrive/sizes.dart';
 import 'package:gdrive/strings.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   List<FolderData> folders = [
     FolderData(
         title: "Web Design",
@@ -42,7 +47,35 @@ class HomePage extends StatelessWidget {
         color2: ProjectColors.brandSecondary2),
   ];
 
-  Widget buildFloatingActionButton() {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: ProjectColors.white,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: ProjectColors.background,
+          appBar: CustomAppBar(),
+          floatingActionButton: _HomePageFloatingActionButton(),
+          body: Container(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  _SearchBlock(),
+                  _FreeStorageBlock(),
+                  _FoldersBlock(folders)
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomePageFloatingActionButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(ProjectSizes.xSmallSpacing),
         decoration: BoxDecoration(
@@ -53,8 +86,11 @@ class HomePage extends StatelessWidget {
             height: ProjectSizes.bigSize,
             width: ProjectSizes.bigSize));
   }
+}
 
-  Widget buildFreeStorageBlock() {
+class _FreeStorageBlock extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(ProjectSizes.xxSmallSpacing),
       child: Container(
@@ -89,14 +125,14 @@ class HomePage extends StatelessWidget {
                     RichText(
                       text: TextSpan(children: [
                         TextSpan(
-                          //TODO: Change on device free space
+                            //TODO: Change on device free space
                             text: "7,5 Gb ",
                             style: ProjectFonts.normalMedium(color: ProjectColors.white)),
                         TextSpan(
-                          //TODO: Change on GDrive max space
+                            //TODO: Change on GDrive max space
                             text: "/ 15 Gb ",
                             style:
-                            ProjectFonts.normalRegular(color: ProjectColors.white60))
+                                ProjectFonts.normalRegular(color: ProjectColors.white60))
                       ]),
                     ),
                   ],
@@ -113,7 +149,7 @@ class HomePage extends StatelessWidget {
                               strokeWidth: 3,
                               backgroundColor: ProjectColors.brandPrimary2,
                               valueColor:
-                              AlwaysStoppedAnimation<Color>(ProjectColors.white),
+                                  AlwaysStoppedAnimation<Color>(ProjectColors.white),
                             ),
                             height: ProjectSizes.xxxBigSize,
                             width: ProjectSizes.xxxBigSize,
@@ -151,8 +187,11 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget buildSearchBlock() {
+class _SearchBlock extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(ProjectSizes.xSmallSpacing),
       child: Container(
@@ -184,8 +223,108 @@ class HomePage extends StatelessWidget {
           )),
     );
   }
+}
 
-  Widget buildFolderIcon(Color color1, Color color2) {
+class _FoldersBlock extends StatefulWidget {
+  _FoldersBlock(this.folders);
+
+  final List<FolderData> folders;
+
+  @override
+  __FoldersBlockState createState() => __FoldersBlockState(folders);
+}
+
+class __FoldersBlockState extends State<_FoldersBlock> {
+  __FoldersBlockState(this.folders);
+
+  List<FolderData> folders;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(ProjectSizes.xSmallSpacing),
+      decoration: BoxDecoration(
+          color: ProjectColors.white,
+          borderRadius:
+              BorderRadius.vertical(top: Radius.circular(ProjectSizes.xSmallRadius))),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "My Folders",
+                  style: ProjectFonts.mediumSemibold(color: ProjectColors.text2),
+                ),
+              ),
+              Image.asset("assets/images/menu.png",
+                  color: ProjectColors.text2,
+                  height: ProjectSizes.xSmallSize,
+                  width: ProjectSizes.xSmallSize)
+            ],
+          ),
+          SizedBox(height: ProjectSizes.xSmallSpacing),
+          _FoldersList(folders)
+        ],
+      ),
+    );
+  }
+}
+
+class _FoldersList extends StatefulWidget {
+  _FoldersList(this.folders);
+
+  final List<FolderData> folders;
+
+  @override
+  __FoldersListState createState() => __FoldersListState(folders);
+}
+
+class __FoldersListState extends State<_FoldersList> {
+  __FoldersListState(this.folders);
+
+  final List<FolderData> folders;
+
+  @override
+  Widget build(BuildContext context) {
+    List<Row> foldersPairs = [];
+
+    for (int i = 0; i < folders.length; i += 2) {
+      foldersPairs.add(Row(
+        children: [
+          Flexible(
+            child: _FolderBlock(folders[i]),
+          ),
+          SizedBox(width: ProjectSizes.xSmallSpacing),
+          if (folders.length > i + 1)
+            Flexible(
+              child: _FolderBlock(folders[i + 1]),
+            )
+          else
+            Flexible(child: Container()),
+        ],
+      ));
+    }
+
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: foldersPairs.length,
+      itemBuilder: (context, index) => foldersPairs[index],
+      separatorBuilder: (context, index) => Container(height: ProjectSizes.xSmallSpacing),
+    );
+  }
+}
+
+class _FolderIcon extends StatelessWidget {
+  _FolderIcon(this.color1, this.color2);
+
+  final Color color1;
+  final Color color2;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: ProjectSizes.folderHeight,
       width: ProjectSizes.folderWidth,
@@ -211,8 +350,15 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget buildFolderBlock(FolderData folderData) {
+class _FolderBlock extends StatelessWidget {
+  _FolderBlock(this.folderData);
+
+  final FolderData folderData;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(ProjectSizes.xSmallSpacing),
       decoration: BoxDecoration(
@@ -223,7 +369,7 @@ class HomePage extends StatelessWidget {
         children: [
           Row(
             children: [
-              buildFolderIcon(folderData.color1, folderData.color2),
+              _FolderIcon(folderData.color1, folderData.color2),
               Expanded(
                 child: Container(),
               ),
@@ -248,91 +394,6 @@ class HomePage extends StatelessWidget {
             style: ProjectFonts.smallRegular(color: folderData.color1),
           )
         ],
-      ),
-    );
-  }
-
-  Widget buildFoldersBlock() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(ProjectSizes.xSmallSpacing),
-      decoration: BoxDecoration(
-          color: ProjectColors.white,
-          borderRadius:
-          BorderRadius.vertical(top: Radius.circular(ProjectSizes.xSmallRadius))),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "My Folders",
-                  style: ProjectFonts.mediumSemibold(color: ProjectColors.text2),
-                ),
-              ),
-              Image.asset("assets/images/menu.png",
-                  color: ProjectColors.text2,
-                  height: ProjectSizes.xSmallSize,
-                  width: ProjectSizes.xSmallSize)
-            ],
-          ),
-          SizedBox(height: 24),
-          buildFoldersList()
-        ],
-      ),
-    );
-  }
-
-  Widget buildFoldersList() {
-    List<Row> foldersPairs = [];
-
-    for (int i = 0; i < folders.length; i += 2) {
-      foldersPairs.add(Row(
-        children: [
-          Flexible(
-            child: buildFolderBlock(folders[i]),
-          ),
-          SizedBox(width: ProjectSizes.xSmallSpacing),
-          if (folders.length > i + 1)
-            Flexible(
-              child: buildFolderBlock(folders[i + 1]),
-            )
-          else
-            Flexible(child: Container()),
-        ],
-      ));
-    }
-
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: foldersPairs.length,
-      itemBuilder: (context, index) => foldersPairs[index],
-      separatorBuilder: (context, index) => Container(height: ProjectSizes.xSmallSpacing),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: ProjectColors.white,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: ProjectColors.background,
-          appBar: CustomAppBar(),
-          floatingActionButton: buildFloatingActionButton(),
-          body: Container(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  buildSearchBlock(),
-                  buildFreeStorageBlock(),
-                  buildFoldersBlock()
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
